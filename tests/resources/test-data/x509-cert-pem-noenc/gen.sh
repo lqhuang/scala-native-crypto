@@ -13,11 +13,11 @@ openssl req \
   -x509 -new -newkey rsa:1024 \
   -noenc \
   -days 36500 -subj '/CN=Hey/O=Scala Native' \
-  -keyform PEM -keyout "${PRIVATE_KEY_FILE}" \
-  -outform PEM -out "${CERTIFICATE_FILE}"
+  -keyout "${PRIVATE_KEY_FILE}" \
+  -out "${CERTIFICATE_FILE}"
 
 # extract public key from the certificate
 openssl x509 \
-  -inform PEM -in "${CERTIFICATE_FILE}" \
-  -outform PEM -out "${PUBLIC_KEY_FILE}" \
+  -in "${CERTIFICATE_FILE}" \
+  -out "${PUBLIC_KEY_FILE}" \
   -pubkey -nocert

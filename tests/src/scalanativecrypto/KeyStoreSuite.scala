@@ -1,7 +1,5 @@
 package scalanativecrypto
 
-import utest.{TestSuite, Tests, assert, assertThrows, test}
-
 import java.io.{ByteArrayInputStream, FileInputStream, IOException}
 import java.security.KeyStore
 import java.security.KeyStoreException
@@ -16,6 +14,8 @@ import java.security.{
 import java.security.cert.{Certificate, X509Certificate}
 import java.util.{HashSet, Collections}
 import java.util.{List => JList}
+
+import utest.{TestSuite, Tests, assert, assertThrows, test}
 
 class KeyStoreSuite extends TestSuite {
 
@@ -105,7 +105,7 @@ class KeyStoreSuite extends TestSuite {
       }
     }
 
-    test("KeyStore use 1 as default alias") {
+    test("KeyStore use 1 as default alias if loaded PKCS#12 file has no name") {
       val keyStore = KeyStore.getInstance("PKCS12")
       val path = s"${testDataDir}/pkcs12-cert-emptypasswd/testing.p12"
       val stream = new FileInputStream(path)
@@ -122,6 +122,14 @@ class KeyStoreSuite extends TestSuite {
 
       assert(keyStore.size() == 1)
       assert(keyStore.getCertificateAlias(first) == "1")
+
+      test("KeyStore should return null if the given alias does not exist") {
+        assert(keyStore.getCertificate("non-existing") == null)
+        assert(keyStore.getCertificateChain("non-existing") == null)
+        assert(keyStore.getCreationDate("non-existing") == null)
+        assert(keyStore.getEntry("non-existing", null) == null)
+        assert(keyStore.getKey("non-existing", Array.emptyCharArray) == null)
+      }
     }
 
     test("KeyStore can load multiple times and should reset previous state") {
@@ -222,7 +230,7 @@ class KeyStoreSuite extends TestSuite {
         "test-password-for-pkcs12".toCharArray
       )
       assert(ksChain.size() == 1)
-      assert(ksChain.getCertificateChain("1").size == 3)
+      assert(ksChain.getCertificateChain("chain-end").size == 3)
 
       val ksBadSSL = loadPKCS12(
         s"${testDataDir}/pkcs12-badssl/badssl.com-client.p12",
@@ -232,20 +240,16 @@ class KeyStoreSuite extends TestSuite {
       assert(ksBadSSL.getCertificateChain("1").size == 1)
     }
 
-    test(
-      "KeyStore can load protection less PKCS#12 file"
-    ) {
+    test("KeyStore can load protection less PKCS#12 file") {
+
+      val path = s"${testDataDir}/pkcs12-cert-emptypasswd/testing.p12"
 
       test("`load` accept null as empty password") {
         val ksCertNoPass = loadPKCS12(path, null)
         assert(ksCertNoPass.size() == 1)
       }
 
-      val path = s"${testDataDir}/pkcs12-cert-emptypasswd/testing.p12"
-      val ksCertNoPass = loadPKCS12(
-        path,
-        Array.emptyCharArray
-      )
+      val ksCertNoPass = loadPKCS12(path, Array.emptyCharArray)
 
       test("`getKey` accept null password") {
         val key = ksCertNoPass.getKey("1", null)
@@ -266,29 +270,30 @@ class KeyStoreSuite extends TestSuite {
       }
     }
 
-    test(
-      "KeyStore can load PKCS#12 with PrivateKeyEntry and certificate chain"
-    ) {
+    test("KeyStore load PKCS#12 with PrivateKeyEntry and certificate chain") {
       val passwd = "test-password-for-pkcs12".toCharArray
-
       val ksChain = loadPKCS12(
         s"${testDataDir}/pkcs12-chain-case-1/testing.p12",
         passwd
       )
-      val certs = ksChain.getCertificateChain("1")
+      assert(ksChain.size() == 1)
+
+      val certs = ksChain.getCertificateChain("chain-end")
       assert(certs.size == 3)
+
       certs.foreach(cert => {
         assert(cert.isInstanceOf[X509Certificate])
         assert(cert.getType() == "X.509")
       })
+
       val entry = ksChain.getEntry(
-        "1",
+        "chain-end",
         new KeyStore.PasswordProtection(passwd)
       )
       assert(entry.isInstanceOf[KeyStore.PrivateKeyEntry])
     }
 
-    /**
+    /*
      * KeyStore.PasswordProtection
      */
 

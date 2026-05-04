@@ -9,11 +9,11 @@ import java.util.{Set => JSet, List => JList}
 import javax.security.auth.x500.X500Principal
 
 import scala.scalanative.unsafe.{fromCString, stackalloc}
+import scala.scalanative.unsafe.CChar
 
 import _root_.com.github.lolgab.scalanativecrypto.internal.crypto
 import _root_.com.github.lolgab.scalanativecrypto.internal.crypto.X509_*
 import _root_.com.github.lolgab.scalanativecrypto.internal.Constants.XN_FLAG_RFC2253
-import scala.scalanative.unsafe.CChar
 
 class OpenSSLX509Certificate protected[scalanativecrypto] (val ptr: X509_*)
     extends X509Certificate() {

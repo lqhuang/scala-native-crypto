@@ -70,6 +70,7 @@ According [JDK Security Algorithm Implementation Requirements](https://docs.orac
   - [ ] RSASSA-PSS (MGF1 mask generation function and SHA-256 or SHA-384 hash algorithms)
 - `java.security.cert.CertificateFactory`
   - [x] X.509
+    - with [known issues](#known-issues)
 - `java.security.cert.CertPath` Encoding
   - [ ] PKCS7
   - [ ] PkiPath
@@ -78,7 +79,7 @@ According [JDK Security Algorithm Implementation Requirements](https://docs.orac
 - `java.security.cert.CertPathValidator`
   - [ ] PKIX
 - `java.security.cert.CertStore`
-  - [x] Collection
+  - [ ] Collection
 - `javax.crypto.Cipher`
   - [ ] AES/CBC/NoPadding (128)
   - [ ] AES/CBC/PKCS5Padding (128)
@@ -118,7 +119,8 @@ According [JDK Security Algorithm Implementation Requirements](https://docs.orac
   - [ ] RSASSA-PSS (2048, 3072, 4096)
   - [ ] X25519
 - `java.security.KeyStore`
-  - [x] PKCS12
+  - [ ] PKCS12
+    - Partially implemented, only supports loading and reading, but not writing for now.
 - `javax.crypto.Mac`
   - [x] HmacSHA1
   - [x] HmacSHA256
@@ -144,10 +146,10 @@ According [JDK Security Algorithm Implementation Requirements](https://docs.orac
 - [x] `java.security.SecureRandom`
 - `java.security.Signature`
 - `javax.net.ssl.SSLContext`: See downstream project [lqhuang/scala-native-http](https://github.com/lqhuang/scala-native-http)
-  - [x] TLSv1.2
-  - [x] TLSv1.3
+  - [ ] TLSv1.2
+  - [ ] TLSv1.3
 - `javax.net.ssl.TrustManagerFactory`: See downstream project [lqhuang/scala-native-http](https://github.com/lqhuang/scala-native-http)
-  - [x] PKIX
+  - [ ] PKIX
 
 Welcome contributions to implement the missing algorithms/classes.
 
