@@ -3,9 +3,9 @@ package com.github.lolgab.scalanativecrypto.crypto
 import com.github.lolgab.scalanativecrypto.internal._
 
 import java.com.github.lolgab.scalanativecrypto.internal.CtxFinalizer
+import java.nio.ByteBuffer
 import java.security.DigestException
-import java.security.{MessageDigest}
-import java.security.Provider
+import java.security.{Provider, MessageDigest}
 import scala.scalanative.meta.LinktimeInfo
 import scala.scalanative.runtime.ByteArray
 import scala.scalanative.unsafe._
@@ -16,7 +16,7 @@ final class OpenSSLMessageDigest protected[scalanativecrypto] (
     algorithm: String,
     name: CString,
     length: Int
-) extends MessageDigest(null, provider, algorithm) {
+) extends MessageDigest(algorithm) {
 
   val ctx = crypto.EVP_MD_CTX_new()
   val md = crypto.EVP_get_digestbyname(name)
@@ -30,6 +30,8 @@ final class OpenSSLMessageDigest protected[scalanativecrypto] (
   }
 
   initDigest()
+
+  def getProvider(): Provider = provider
 
   def digest(): Array[Byte] = engineDigest()
 
@@ -49,6 +51,19 @@ final class OpenSSLMessageDigest protected[scalanativecrypto] (
   def update(input: Array[Byte]): Unit = engineUpdate(input, 0, input.length)
 
   def update(input: Byte): Unit = engineUpdate(input)
+
+  def update(input: ByteBuffer): Unit =
+    if (input.hasRemaining()) {
+      if (input.hasArray()) {
+        val array = input.array()
+        val offset = input.arrayOffset() + input.position()
+        val length = input.remaining()
+        engineUpdate(array, offset, length)
+        input.position(input.position() + length)
+      } else {
+        while (input.hasRemaining()) engineUpdate(input.get())
+      }
+    }
 
   def reset(): Unit = engineReset()
 

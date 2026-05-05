@@ -9,13 +9,18 @@ import scala.scalanative.unsigned.UnsignedRichInt
 @extern
 object crypto {
 
-  // Global
+  /*
+   * Global
+   */
   type OSSL_LIB_CTX_* = CVoidPtr
+
   def OSSL_LIB_CTX_new(): OSSL_LIB_CTX_* = extern
   def OSSL_LIB_CTX_free(ctx: OSSL_LIB_CTX_*): Unit = extern
   def OSSL_LIB_CTX_get0_global_default(): OSSL_LIB_CTX_* = extern
 
-  // BIO operations
+  /*
+   * BIO operations
+   */
   type BIO_* = CVoidPtr
   type BIO_METHOD_* = CVoidPtr
   type BIO_CTRL_* = CInt
@@ -29,55 +34,56 @@ object crypto {
 
   // def BIO_get_mem_data(b: BIO_*, pp: Ptr[CString]): CLong = extern
 
-  // EVP related types and functions
-
+  /*
+   * EVP related types and functions
+   */
   type EVP_MD_* = CVoidPtr
   type EVP_MD_CTX_* = CVoidPtr
   type EVP_PKEY_* = CVoidPtr
 
-  def EVP_PKEY_free(pkey: EVP_PKEY_*): Unit = extern
-
+  // scalafmt: { maxColumn = 120 }
   def RAND_bytes(buf: Ptr[Byte], num: CInt): CInt = extern
 
-  def EVP_get_digestbyname(name: CString): EVP_MD_* = extern
+  def EVP_PKEY_free(pkey: EVP_PKEY_*): Unit = extern
 
   def EVP_MD_CTX_new(): EVP_MD_CTX_* = extern
   def EVP_MD_CTX_free(ctx: EVP_MD_CTX_*): Unit = extern
   def EVP_MD_CTX_reset(ctx: EVP_MD_CTX_*): Unit = extern
 
   def EVP_DigestInit(ctx: EVP_MD_CTX_*, tpe: EVP_MD_*): CInt = extern
-  def EVP_DigestUpdate(ctx: EVP_MD_CTX_*, d: Ptr[Byte], cnt: CSize): CInt =
-    extern
-  def EVP_DigestFinal(ctx: EVP_MD_CTX_*, md: Ptr[Byte], s: Ptr[Int]): CInt =
-    extern
+  def EVP_DigestUpdate(ctx: EVP_MD_CTX_*, d: Ptr[Byte], cnt: CSize): CInt = extern
+  def EVP_DigestFinal(ctx: EVP_MD_CTX_*, md: Ptr[Byte], s: Ptr[Int]): CInt = extern
 
+  def EVP_get_digestbyname(name: CString): EVP_MD_* = extern
   def EVP_sha256(): EVP_MD_* = extern // Function to get the SHA-256 algorithm
+  // scalafmt: { maxColumn = 80 }
 
-  // HMAC related types and functions
+  /*
+   * HMAC related types and functions
+   */
   type HMAC_CTX_* = CVoidPtr
 
+  // scalafmt: { maxColumn = 120 }
   def HMAC_CTX_new(): HMAC_CTX_* = extern
   def HMAC_CTX_reset(ctx: HMAC_CTX_*): Unit = extern
   def HMAC_CTX_free(ctx: HMAC_CTX_*): Unit = extern
-  def HMAC_Init_ex(
-      ctx: HMAC_CTX_*,
-      key: CVoidPtr,
-      key_len: CInt,
-      md: EVP_MD_*,
-      impl: CVoidPtr
-  ): CInt = extern
-  def HMAC_Update(ctx: HMAC_CTX_*, data: Ptr[Byte], len: Int): CInt =
-    extern
-  def HMAC_Final(ctx: HMAC_CTX_*, md: Ptr[Byte], len: Ptr[Int]): CInt =
-    extern
+  def HMAC_Init_ex(ctx: HMAC_CTX_*, key: CVoidPtr, key_len: CInt, md: EVP_MD_*, impl: CVoidPtr): CInt = extern
+  def HMAC_Update(ctx: HMAC_CTX_*, data: Ptr[Byte], len: Int): CInt = extern
+  def HMAC_Final(ctx: HMAC_CTX_*, md: Ptr[Byte], len: Ptr[Int]): CInt = extern
+  // scalafmt: { maxColumn = 80 }
 
-  // X509 related types and functions
+  /*
+   * X509 related types and functions
+   */
   type X509_* = CVoidPtr
+  type X509_NAME_* = CVoidPtr
+
   type stack_st_X509 = CVoidPtr
 
   type ASN1_INTEGER_* = CVoidPtr
   type ASN1_TIME_* = CVoidPtr
 
+  // scalafmt: { maxColumn = 120 }
   def X509_new(): X509_* = extern
   def X509_free(x: X509_*): Unit = extern
   def X509_get0_serialNumber(x: X509_*): ASN1_INTEGER_* = extern
@@ -86,12 +92,13 @@ object crypto {
   def X509_get0_pubkey(x: X509_*): EVP_PKEY_* = extern
   def X509_get_subject_name(a: X509_*): X509_NAME_* = extern
   def X509_check_ca(cert: X509_*): CInt = extern
+  def X509_alias_get0(x: X509_*, len: Ptr[CInt]): Ptr[CUnsignedChar] = extern
+  def X509_keyid_get0(x: X509_*, len: Ptr[CInt]): Ptr[CUnsignedChar] = extern
 
-  // Count size of stack_st_X509
   def sncrypto_ossl_sk_X509_num(stack: Ptr[stack_st_X509]): CInt = extern
-  def sncrypto_ossl_sk_X509_value(stack: Ptr[stack_st_X509], i: Int): X509_* =
-    extern
+  def sncrypto_ossl_sk_X509_value(stack: Ptr[stack_st_X509], i: Int): X509_* = extern
   def sncrypto_ossl_sk_X509_free(stack: Ptr[stack_st_X509]): Unit = extern
+  // scalafmt: { maxColumn = 80 }
 
   def PEM_read_bio_X509(
       bp: BIO_*,
@@ -101,9 +108,6 @@ object crypto {
   ): X509_* =
     extern
 
-  // X509_NAME and ASN1_STRING related types and functions
-  type X509_NAME_* = CVoidPtr
-
   def X509_NAME_print_ex(
       out: BIO_*,
       nm: X509_NAME_*,
@@ -112,7 +116,9 @@ object crypto {
   ): CInt =
     extern
 
-  // PKCS7 related types and functions
+  /*
+   * PKCS7 related types and functions
+   */
   type PKCS7_* = CVoidPtr
 
   def PEM_read_bio_PKCS7(
@@ -123,7 +129,9 @@ object crypto {
   ): PKCS7_* =
     extern
 
-  // PKCS12 related types and functions
+  /*
+   * PKCS12 related types and functions
+   */
   type PKCS12_* = CVoidPtr
 
   def PKCS12_free(p12: PKCS12_*): Unit = extern
@@ -142,7 +150,9 @@ object crypto {
 
   def d2i_PKCS12_bio(bp: BIO_*, p12: Ptr[PKCS12_*]): PKCS12_* = extern
 
-  // Other types and functions
+  /*
+   * Other types and functions
+   */
   type pem_password_cb = CFuncPtr4[CString, CInt, CInt, Ptr[Byte], CInt]
 
 }

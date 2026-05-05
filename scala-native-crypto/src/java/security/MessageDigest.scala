@@ -1,25 +1,24 @@
 package java.security
 
+import java.nio.ByteBuffer
 import java.security.Provider
 import java.util.Objects.requireNonNull
 
 abstract class MessageDigestSpi {}
 
 // Refs:
-// - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/MessageDigest
-abstract class MessageDigest(
-    spi: MessageDigestSpi,
-    provider: Provider,
-    algorithm: String
-) {
+// - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/MessageDigest.html
+abstract class MessageDigest(algorithm: String) extends MessageDigestSpi {
 
-  final def getProvider(): Provider = provider
+  def getProvider(): Provider
 
   def update(input: Byte): Unit
 
   def update(input: Array[Byte], offset: Int, len: Int): Unit
 
   def update(input: Array[Byte]): Unit
+
+  def update(input: ByteBuffer): Unit
 
   def digest(): Array[Byte]
 
