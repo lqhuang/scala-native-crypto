@@ -86,12 +86,15 @@ object crypto {
   // scalafmt: { maxColumn = 120 }
   def X509_new(): X509_* = extern
   def X509_free(x: X509_*): Unit = extern
+  def X509_dup(x: X509_*): X509_* = extern
+  def X509_up_ref(x: X509_*): CInt = extern
   def X509_get0_serialNumber(x: X509_*): ASN1_INTEGER_* = extern
   def X509_get0_notBefore(x: X509_*): ASN1_TIME_* = extern
   def X509_get0_notAfter(x: X509_*): ASN1_TIME_* = extern
   def X509_get0_pubkey(x: X509_*): EVP_PKEY_* = extern
   def X509_get_subject_name(a: X509_*): X509_NAME_* = extern
   def X509_check_ca(cert: X509_*): CInt = extern
+  def X509_check_purpose(x: X509_*, id: CInt, ca: CInt): CInt = extern
   def X509_alias_get0(x: X509_*, len: Ptr[CInt]): Ptr[CUnsignedChar] = extern
   def X509_keyid_get0(x: X509_*, len: Ptr[CInt]): Ptr[CUnsignedChar] = extern
 
