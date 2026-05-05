@@ -7,42 +7,84 @@ import java.security.Provider
 import java.security.spec.AlgorithmParameterSpec
 import java.util.Objects.requireNonNull
 
-abstract class MacSpi {}
+abstract class MacSpi {
+  def engineGetMacLength(): Int
+
+  def engineInit(key: Key, params: AlgorithmParameterSpec): Unit
+
+  def engineUpdate(data: Byte): Unit
+
+  def engineUpdate(data: Array[Byte], offset: Int, len: Int): Unit
+
+  def engineUpdate(data: ByteBuffer): Unit = {
+    requireNonNull(data, "Data ByteBuffer must not be null")
+    if (data.hasRemaining()) {
+      val len = data.remaining()
+      val arr = new Array[Byte](len)
+      data.get(arr)
+      engineUpdate(arr, 0, len)
+    }
+  }
+
+  def engineDoFinal(): Array[Byte]
+
+  def engineReset(): Unit
+}
 
 // Refs:
-// - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/javax/crypto/Mac
+// - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/javax/crypto/Mac.html
 abstract class Mac protected (
     spi: MacSpi,
     provider: Provider,
     algorithm: String
 ) extends Cloneable {
 
-  final def getAlgorithm(): String = algorithm
+  final def getAlgorithm(): String =
+    algorithm
 
-  final def getProvider(): Provider = provider
+  final def getProvider(): Provider =
+    provider
 
-  def getMacLength(): Int
+  final def getMacLength(): Int =
+    spi.engineGetMacLength()
 
-  def init(key: Key): Unit
+  final def init(key: Key): Unit =
+    init(key, null)
 
-  def init(key: Key, params: AlgorithmParameterSpec): Unit = ???
+  final def init(key: Key, params: AlgorithmParameterSpec): Unit =
+    spi.engineInit(key, params)
 
-  // mark as ??? for compilation now, should be implemented later
-  def update(data: Byte): Unit = ???
+  final def update(data: Byte): Unit =
+    spi.engineUpdate(data)
 
-  def update(data: Array[Byte]): Unit
+  final def update(data: Array[Byte]): Unit =
+    spi.engineUpdate(data, 0, data.length)
 
-  def update(data: Array[Byte], offset: Int, len: Int): Unit = ???
+  final def update(data: Array[Byte], offset: Int, len: Int): Unit =
+    spi.engineUpdate(data, offset, len)
 
-  def update(data: ByteBuffer): Unit = ???
+  final def update(data: ByteBuffer): Unit =
+    spi.engineUpdate(data)
 
-  def doFinal(): Array[Byte]
+  final def doFinal(): Array[Byte] =
+    spi.engineDoFinal()
 
-  def doFinal(data: Array[Byte], outOffset: Int): Array[Byte] = ???
+  final def doFinal(data: Array[Byte], outOffset: Int): Array[Byte] = {
+    if ((data.length - outOffset) <= 0)
+      throw new ShortBufferException(
+        "Output buffer too small to hold the result"
+      )
+    update(data, outOffset, data.length - outOffset)
+    doFinal()
+  }
 
-  def doFinal(data: Array[Byte]): Array[Byte]
+  final def doFinal(data: Array[Byte]): Array[Byte] = {
+    update(data)
+    spi.engineDoFinal()
+  }
 
-  def reset(): Unit
+  final def reset(): Unit =
+    spi.engineReset()
 
 }
 
@@ -50,13 +92,13 @@ object Mac {
 
   import com.github.lolgab.scalanativecrypto.{OpenSSLProvider, JcaService}
 
-  def getInstance(algorithm: String): Mac =
+  final def getInstance(algorithm: String): Mac =
     getInstance(algorithm, OpenSSLProvider.defaultInstance)
 
-  def getInstance(algorithm: String, provider: String): Mac =
+  final def getInstance(algorithm: String, provider: String): Mac =
     throw new UnsupportedOperationException()
 
-  def getInstance(algorithm: String, provider: Provider): Mac = {
+  final def getInstance(algorithm: String, provider: Provider): Mac = {
     requireNonNull(algorithm)
     requireNonNull(provider)
     require(algorithm.nonEmpty)
