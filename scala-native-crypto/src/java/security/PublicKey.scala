@@ -1,5 +1,5 @@
 package java.security
 
 // Refs:
-// - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/PublicKey
+// - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/PublicKey.html
 trait PublicKey extends AsymmetricKey {}

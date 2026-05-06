@@ -4,7 +4,7 @@ import java.security.{InvalidParameterException, KeyStore}
 import java.util.{Set => JSet}
 
 // Refs:
-// - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/cert/PKIXBuilderParameters
+// - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/cert/PKIXBuilderParameters.html
 class PKIXBuilderParameters private (
     trustAnchors: JSet[TrustAnchor],
     keyStore: KeyStore,

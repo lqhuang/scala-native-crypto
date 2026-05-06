@@ -11,7 +11,7 @@ import java.security.spec.AlgorithmParameterSpec
 abstract class CipherSpi {}
 
 // Refs:
-// - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/javax/crypto/Cipher
+// - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/javax/crypto/Cipher.html
 abstract class Cipher protected (
     spi: CipherSpi,
     provider: Provider,

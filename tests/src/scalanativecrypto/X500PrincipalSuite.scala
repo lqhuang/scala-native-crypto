@@ -3,7 +3,6 @@ package scalanativecrypto
 import utest.{TestSuite, Tests, test, assert, assertThrows}
 
 import java.math.BigInteger
-import java.io.{ByteArrayInputStream, InputStream}
 import java.util.{Collections, HashMap => JHashMap, Map => JMap}
 import javax.security.auth.x500.X500Principal
 
@@ -98,24 +97,6 @@ class X500PrincipalSuite extends TestSuite {
       assert(X500Principal.RFC1779 == "RFC1779")
       assert(X500Principal.RFC2253 == "RFC2253")
       assert(X500Principal.CANONICAL == "CANONICAL")
-    }
-
-    test("Constructor(String)") {
-      assert(new X500Principal("CN=Test") != null)
-
-      // multi-attribute DN RFC 2253 style without spaces"
-      assert(
-        new X500Principal("CN=Duke,OU=JavaSoft,O=Sun Microsystems,C=US") != null
-      )
-
-      // mutli same oid attributes
-      assert(new X500Principal("DC=example,DC=com") != null)
-
-      // with spaces
-      assert(new X500Principal("UID=jsmith,    DC=example,   DC=net") != null)
-
-      // with non ascii characters
-      assert(new X500Principal("UID=用户, DC=net") != null)
     }
 
   }

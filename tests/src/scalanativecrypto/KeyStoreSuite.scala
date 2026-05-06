@@ -3,17 +3,9 @@ package scalanativecrypto
 import java.io.{ByteArrayInputStream, FileInputStream, IOException}
 import java.security.KeyStore
 import java.security.KeyStoreException
-import java.security.NoSuchAlgorithmException
-import java.security.{
-  PrivateKey,
-  Provider,
-  PublicKey,
-  Security,
-  UnrecoverableKeyException
-}
+import java.security.{Provider, UnrecoverableKeyException}
 import java.security.cert.{Certificate, X509Certificate}
-import java.util.{HashSet, Collections}
-import java.util.{List => JList}
+import java.util.Collections
 
 import utest.{TestSuite, Tests, assert, assertThrows, test}
 

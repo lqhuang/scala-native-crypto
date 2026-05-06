@@ -9,7 +9,7 @@ import java.util.{Set => JSet}
 
 // Refs:
 // - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/Provider.html
-// - https://docs.oracle.com/en/java/javase/25/security/howtoimplaprovider
+// - https://docs.oracle.com/en/java/javase/25/security/howtoimplaprovider.html
 abstract class Provider(
     private val name: String,
     private val versionStr: String,

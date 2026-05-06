@@ -6,7 +6,6 @@ import java.nio.charset.StandardCharsets.UTF_8
 import java.security.cert.{CertificateFactory, X509Certificate}
 import java.security.cert.CertificateException
 import java.io.{ByteArrayInputStream, FileInputStream}
-import java.io.IOException
 
 class CertificateFactorySuite extends TestSuite {
 
