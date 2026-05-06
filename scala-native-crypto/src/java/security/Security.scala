@@ -1,12 +1,9 @@
 package java.security
 
-import java.util.Collections
-import java.util.HashSet
+import java.util.{Collections, HashSet}
 import java.util.Objects.requireNonNull
-import java.util.{Map => JMap}
-import java.util.{Set => JSet}
-import scala.collection.mutable.HashMap
-import scala.collection.mutable.ListBuffer
+import java.util.{Map => JMap, Set => JSet}
+import scala.collection.mutable.{HashMap, ListBuffer}
 
 // Refs:
 // - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/Security.html

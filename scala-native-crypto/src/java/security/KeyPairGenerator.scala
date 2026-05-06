@@ -1,6 +1,5 @@
 package java.security
 
-import java.security.{Provider, SecureRandom}
 import java.security.spec.AlgorithmParameterSpec
 
 abstract class KeyPairGeneratorSpi {}
