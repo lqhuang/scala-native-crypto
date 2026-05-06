@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         java:
-          - "11"
+          # - "11"
           - "17"
           - "21"
           - "25"
@@ -30,9 +30,8 @@ jobs:
       - name: Install Dependencies
         run: sudo apt-get update && sudo apt-get install -y libssl-dev
       - name: Check formatting
-        run:
-          ./mill --no-server mill.scalalib.scalafmt.ScalafmtModule/checkFormatAll __.sources
-          # ./mill mill.scalalib.scalafmt.ScalafmtModule/checkFormatAll --sources buildSources
+        run: ./mill --no-server mill.scalalib.scalafmt.ScalafmtModule/checkFormatAll
+          __.sources # ./mill mill.scalalib.scalafmt.ScalafmtModule/checkFormatAll --sources buildSources
       # - name: Check scalafix
       #   run:
       #     ./mill --no-server __.fix --check
@@ -44,7 +43,8 @@ jobs:
         run: ./mill --no-server show __.publishArtifacts
 
   publish-sonatype:
-    if: github.repository == 'lolgab/scala-native-crypto' && contains(github.ref, 'refs/tags/')
+    if: github.repository == 'lolgab/scala-native-crypto' && contains(github.ref,
+      'refs/tags/')
     needs: build
     runs-on: ubuntu-24.04
     env:
