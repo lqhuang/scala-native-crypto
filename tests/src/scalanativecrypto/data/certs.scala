@@ -51,7 +51,15 @@ object CertExample0 {
     -----END PUBLIC KEY-----
     """
 
-  val publicKey = nonStripIndentPubKey.stripIndent()
+  // `stripIndent()` is not available for Java 11 + Scala Native?
+  // See
+  // 1. https://github.com/lolgab/scala-native-crypto/actions/runs/25430612878/job/74595574045?pr=33#step:6:786
+  // 2. https://github.com/lolgab/scala-native-crypto/actions/runs/25431251169/job/74597782992?pr=33#step:6:694
+  val publicKey = nonStripIndentPubKey
+    .split("\n")
+    .map(_.trim)
+    .filter(_.nonEmpty)
+    .mkString("\n")
 
   val nonStripIndentCert =
     """
@@ -68,6 +76,9 @@ object CertExample0 {
     -----END CERTIFICATE-----
     """
 
-  val cert = nonStripIndentCert.stripIndent()
-
+  val cert = nonStripIndentCert
+    .split("\n")
+    .map(_.trim)
+    .filter(_.nonEmpty)
+    .mkString("\n")
 }

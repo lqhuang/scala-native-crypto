@@ -6,14 +6,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.{List => JList, Map => JMap, Set => JSet}
 
-import scala.scalanative.unsafe.CQuote
-
 import services._
-import internal.crypto.{
-  OSSL_PROVIDER_available,
-  OSSL_PROVIDER_load,
-  OSSL_LIB_CTX_get0_global_default
-}
 
 class OpenSSLProvider(
     private val name: String = "scala-native-crypto",

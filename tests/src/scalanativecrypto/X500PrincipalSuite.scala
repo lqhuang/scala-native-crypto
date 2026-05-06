@@ -87,7 +87,7 @@ class X500PrincipalSuite extends TestSuite {
       733117301506035504030c0e4553544549442d534b20323031
       313118301606092a864886f70d0109011609706b6940736b2e
       6565
-      """.stripIndent.split("\n").mkString.strip(),
+      """.split("\n").map(_.trim()).mkString.strip(),
       16
     ).toByteArray()
 
