@@ -3,7 +3,6 @@ package com.github.lolgab.scalanativecrypto.crypto
 import com.github.lolgab.scalanativecrypto.internal._
 
 import java.com.github.lolgab.scalanativecrypto.internal.CtxFinalizer
-import java.nio.ByteBuffer
 import java.security.DigestException
 import java.security.{Provider, MessageDigest}
 import scala.scalanative.meta.LinktimeInfo
@@ -33,45 +32,19 @@ final class OpenSSLMessageDigest protected[scalanativecrypto] (
 
   def getProvider(): Provider = provider
 
-  def digest(): Array[Byte] = engineDigest()
+  final override def engineGetDigestLength(): Int = length
 
-  def digest(input: Array[Byte]): Array[Byte] = {
-    engineUpdate(input, 0, input.length)
-    engineDigest()
+  final def engineReset(): Unit = {
+    crypto.EVP_MD_CTX_reset(ctx)
+    initDigest()
   }
 
-  def digest(buf: Array[Byte], offset: Int, len: Int): Int =
-    engineDigest(buf, offset, len)
-
-  def getDigestLength(): Int = engineGetDigestLength()
-
-  def update(input: Array[Byte], offset: Int, len: Int): Unit =
-    engineUpdate(input, offset, len)
-
-  def update(input: Array[Byte]): Unit = engineUpdate(input, 0, input.length)
-
-  def update(input: Byte): Unit = engineUpdate(input)
-
-  def update(input: ByteBuffer): Unit =
-    if (input.hasRemaining()) {
-      if (input.hasArray()) {
-        val array = input.array()
-        val offset = input.arrayOffset() + input.position()
-        val length = input.remaining()
-        engineUpdate(array, offset, length)
-        input.position(input.position() + length)
-      } else {
-        while (input.hasRemaining()) engineUpdate(input.get())
-      }
+  final def initDigest() =
+    if (crypto.EVP_DigestInit(ctx, md) != 1) {
+      throw new DigestException("Failed to initialize digest")
     }
 
-  def reset(): Unit = engineReset()
-
-  // Engine methods
-
-  private def engineGetDigestLength(): Int = length
-
-  private def engineDigest(): Array[Byte] = {
+  final def engineDigest(): Array[Byte] = {
     val result = new Array[Byte](length)
     val lengthPtr = stackalloc[Int]()
     if (
@@ -86,7 +59,11 @@ final class OpenSSLMessageDigest protected[scalanativecrypto] (
     result
   }
 
-  private def engineDigest(buf: Array[Byte], offset: Int, len: Int): Int =
+  final override def engineDigest(
+      buf: Array[Byte],
+      offset: Int,
+      len: Int
+  ): Int =
     if (len < engineGetDigestLength()) {
       engineReset()
       throw new DigestException(
@@ -110,18 +87,7 @@ final class OpenSSLMessageDigest protected[scalanativecrypto] (
       }
     }
 
-  private def engineReset(): Unit = {
-    crypto.EVP_MD_CTX_reset(ctx)
-    initDigest()
-  }
-
-  private def initDigest() = {
-    if (crypto.EVP_DigestInit(ctx, md) != 1) {
-      throw new DigestException("Failed to initialize digest")
-    }
-  }
-
-  private def engineUpdate(input: Byte): Unit = {
+  final def engineUpdate(input: Byte): Unit = {
     val buf = stackalloc[Byte]()
     !buf = input
     if (crypto.EVP_DigestUpdate(ctx, buf, 1.toCSize) != 1) {
@@ -129,7 +95,7 @@ final class OpenSSLMessageDigest protected[scalanativecrypto] (
     }
   }
 
-  private def engineUpdate(input: Array[Byte], offset: Int, len: Int): Unit = {
+  final def engineUpdate(input: Array[Byte], offset: Int, len: Int): Unit = {
     if (offset < 0 || len < 0 || len > input.length - offset) {
       throw new IndexOutOfBoundsException
     }
@@ -145,4 +111,5 @@ final class OpenSSLMessageDigest protected[scalanativecrypto] (
       }
     }
   }
+
 }
