@@ -3,7 +3,6 @@ package scalanativecrypto
 import utest.{TestSuite, Tests, test, assert, assertThrows}
 
 import java.math.BigInteger
-import java.util.{Collections, HashMap => JHashMap, Map => JMap}
 import javax.security.auth.x500.X500Principal
 
 class X500PrincipalSuite extends TestSuite {

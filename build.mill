@@ -25,7 +25,7 @@ trait Shared
     with ScalafixModule
     with ScalaNativeModule {
   def organization = "com.github.lolgab"
-  def scalaNativeVersion = "0.5.10"
+  def scalaNativeVersion = "0.5.11"
 
   override def jvmVersion = Task { Task.env.getOrElse("JVM_VERSION", super.jvmVersion()) }
 
