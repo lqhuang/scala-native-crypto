@@ -5,16 +5,16 @@ import com.github.lolgab.scalanativecrypto.internal._
 
 import java.com.github.lolgab.scalanativecrypto.internal.CtxFinalizer
 import java.security.{Provider, Key}
+import java.security.InvalidAlgorithmParameterException
+import java.security.spec.AlgorithmParameterSpec
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.Objects.requireNonNull
 import javax.crypto.{Mac, MacSpi}
 import javax.crypto.spec.SecretKeySpec
 
+import scala.scalanative.annotation.alwaysinline
 import scala.scalanative.meta.LinktimeInfo
 import scala.scalanative.unsafe._
-import java.security.spec.AlgorithmParameterSpec
-import java.security.InvalidAlgorithmParameterException
-import scala.scalanative.annotation.alwaysinline
 
 final class OpenSSLMac protected[scalanativecrypto] (
     provider: Provider,
@@ -138,7 +138,7 @@ private final class OpenSSLMacSpi(
   @alwaysinline
   private def throwIfNotInitialized(): Unit =
     if (!isInitialized.get()) {
-      throw new IllegalStateException("Mac not initialized")
+      throw new IllegalStateException("MAC not initialized")
     }
 
 }

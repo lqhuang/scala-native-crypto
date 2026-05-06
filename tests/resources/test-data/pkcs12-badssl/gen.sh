@@ -7,7 +7,7 @@ echo "Current working dir is ${WORKING_DIR}"
 
 # BADSSL_CLIENT_PEM_FILE="${WORKING_DIR}/badssl.com-client.pem"
 BADSSL_CLIENT_PKCS12_FILE="${WORKING_DIR}/badssl.com-client.p12"
-BADSSL_CLIENT_PASSWORD="badssl.com"
+BADSSL_CLIENT_PASSWORD=badssl.com
 
 BADSSL_CLIENT_CRT_FILE="${WORKING_DIR}/badssl.com-client.crt.pem"
 BADSSL_CLIENT_PRIVATEKEY_FILE="${WORKING_DIR}/badssl.com.private.pem"

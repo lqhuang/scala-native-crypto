@@ -132,4 +132,10 @@ class OpenSSLX509Certificate protected[scalanativecrypto] (val ptr: X509_*)
 
   override def toString: String = ???
 
+  override def equals(other: Any): Boolean = other match {
+    case that: OpenSSLX509Certificate =>
+      crypto.X509_cmp(this.ptr, that.ptr) == 0
+    case _ => false
+  }
+
 }

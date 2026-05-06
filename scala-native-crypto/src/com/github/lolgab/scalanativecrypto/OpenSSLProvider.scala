@@ -6,7 +6,14 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.{List => JList, Map => JMap, Set => JSet}
 
+import scala.scalanative.unsafe.CQuote
+
 import services._
+import internal.crypto.{
+  OSSL_PROVIDER_available,
+  OSSL_PROVIDER_load,
+  OSSL_LIB_CTX_get0_global_default
+}
 
 class OpenSSLProvider(
     private val name: String = "scala-native-crypto",
@@ -73,6 +80,18 @@ class OpenSSLProvider(
 
   private def setup(): Unit = {
     if (initialized.compareAndSet(false, true)) {
+      // Load legacy provider to support old algorithms, e.g. DES, RC2, etc.
+      // Required by legacy PKCS#12 files, more specifically, thoses tests with
+      // BadSSL's certs in our own tests and upstream scala-requests' tests.
+      val osslLibCtx = OSSL_LIB_CTX_get0_global_default()
+      if (OSSL_PROVIDER_available(osslLibCtx, c"legacy") == 1)
+        OSSL_PROVIDER_load(osslLibCtx, c"legacy")
+      else
+        System.err.println(
+          "[java.security.Provider] OpenSSL legacy provider is not available, Some algorithms may not work"
+        )
+      // load the default provider explicitly
+      OSSL_PROVIDER_load(osslLibCtx, c"default")
 
       for (
         (len, aliases) <- Seq(

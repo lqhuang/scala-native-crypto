@@ -13,10 +13,17 @@ object crypto {
    * Global
    */
   type OSSL_LIB_CTX_* = CVoidPtr
+  type OSSL_PROVIDER_* = CVoidPtr
 
+  // scalafmt: { maxColumn = 120 }
   def OSSL_LIB_CTX_new(): OSSL_LIB_CTX_* = extern
   def OSSL_LIB_CTX_free(ctx: OSSL_LIB_CTX_*): Unit = extern
   def OSSL_LIB_CTX_get0_global_default(): OSSL_LIB_CTX_* = extern
+  def OSSL_LIB_CTX_set0_default(ctx: OSSL_LIB_CTX_*): OSSL_LIB_CTX_* = extern
+
+  def OSSL_PROVIDER_available(ctx: OSSL_LIB_CTX_*, name: CString): CInt = extern
+  def OSSL_PROVIDER_load(ctx: OSSL_LIB_CTX_*, name: CString): OSSL_PROVIDER_* = extern
+  // scalafmt: { maxColumn = 80 }
 
   /*
    * BIO operations
@@ -88,6 +95,7 @@ object crypto {
   def X509_free(x: X509_*): Unit = extern
   def X509_dup(x: X509_*): X509_* = extern
   def X509_up_ref(x: X509_*): CInt = extern
+  def X509_cmp(a: X509_*, b: X509_*): CInt = extern
   def X509_get0_serialNumber(x: X509_*): ASN1_INTEGER_* = extern
   def X509_get0_notBefore(x: X509_*): ASN1_TIME_* = extern
   def X509_get0_notAfter(x: X509_*): ASN1_TIME_* = extern
@@ -157,6 +165,9 @@ object crypto {
    * Other types and functions
    */
   type pem_password_cb = CFuncPtr4[CString, CInt, CInt, Ptr[Byte], CInt]
+
+  def ERR_get_error(): CUnsignedLong = extern
+  def ERR_error_string(err: CUnsignedLong, buf: CString): CString = extern
 
 }
 
