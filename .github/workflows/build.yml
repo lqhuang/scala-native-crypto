@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         java:
-          # - "11"
+          - "11"
           - "17"
           - "21"
           - "25"
@@ -29,6 +29,11 @@ jobs:
       - uses: coursier/cache-action@v7
       - name: Install Dependencies
         run: sudo apt-get update && sudo apt-get install -y libssl-dev
+      - name: Collect build information
+        run: |
+          java -version
+          clang++ --version
+          openssl version
       - name: Check formatting
         run: ./mill --no-server mill.scalalib.scalafmt.ScalafmtModule/checkFormatAll
           __.sources # ./mill mill.scalalib.scalafmt.ScalafmtModule/checkFormatAll --sources buildSources
