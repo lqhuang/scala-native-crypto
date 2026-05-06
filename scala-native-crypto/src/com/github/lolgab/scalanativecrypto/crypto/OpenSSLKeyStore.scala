@@ -27,6 +27,8 @@ import scala.scalanative.unsigned.UnsignedRichInt
 import scala.scalanative.meta.LinktimeInfo
 import scala.scalanative.annotation.alwaysinline
 
+import com.github.lolgab.scalanativecrypto.AppLibCtx
+import com.github.lolgab.scalanativecrypto.crypto.cert.OpenSSLX509Certificate
 import com.github.lolgab.scalanativecrypto.internal.crypto
 import com.github.lolgab.scalanativecrypto.internal.crypto.{
   PKCS12_*,
@@ -34,7 +36,7 @@ import com.github.lolgab.scalanativecrypto.internal.crypto.{
   EVP_PKEY_*,
   stack_st_X509
 }
-import com.github.lolgab.scalanativecrypto.crypto.cert.OpenSSLX509Certificate
+import com.github.lolgab.scalanativecrypto.internal.Constants.NID_pkcs7_data
 
 final class OpenSSLKeyStore(provider: Provider, ksType: String)
     extends KeyStore(new OpenSSLKeyStoreSpi(), provider, ksType)
@@ -327,9 +329,12 @@ final class OpenSSLKeyStoreSpi protected[scalanativecrypto]
       val passwdLength = passwdUTF8.getBytes(UTF_8).length
       val passwdBuf = toCString(passwdUTF8)
 
+      val p12_ = stackalloc[PKCS12_*]()
+      !p12_ = crypto.PKCS12_init_ex(NID_pkcs7_data, AppLibCtx.osslLibCtx, null)
+
       val bio = crypto.BIO_new_mem_buf(memBuf, bytes.length)
       try {
-        val p12Handle = crypto.d2i_PKCS12_bio(bio, null)
+        val p12Handle = crypto.d2i_PKCS12_bio(bio, p12_)
         if (p12Handle == null)
           throw new IOException("failed to parse the PKCS#12 data")
 

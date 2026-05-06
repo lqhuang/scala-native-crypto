@@ -50,4 +50,13 @@ object CtxFinalizer {
   ): Unit =
     cleaner.register(owner, new StackOfX509_State(ptr))
 
+  private final class OsslLibCtx(ptr: crypto.OSSL_LIB_CTX_*) extends Runnable {
+    override def run(): Unit = crypto.OSSL_LIB_CTX_free(ptr)
+  }
+  def register_OSSL_LIB_CTX(
+      owner: AnyRef,
+      ptr: crypto.OSSL_LIB_CTX_*
+  ): Unit =
+    cleaner.register(owner, new OsslLibCtx(ptr))
+
 }

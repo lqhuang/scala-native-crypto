@@ -145,6 +145,11 @@ object crypto {
    */
   type PKCS12_* = CVoidPtr
 
+  def PKCS12_init_ex(
+      mode: CInt,
+      ctx: OSSL_LIB_CTX_*,
+      propq: CString
+  ): PKCS12_* = extern
   def PKCS12_free(p12: PKCS12_*): Unit = extern
   def PKCS12_verify_mac(
       p12: PKCS12_*,
@@ -173,6 +178,8 @@ object crypto {
 
 object Constants {
   val EVP_MAX_MD_SIZE: Int = 64
+
+  val NID_pkcs7_data: Int = 21
 
   /**
    * Parameters used by `ASN1_STRING_print_ex()`

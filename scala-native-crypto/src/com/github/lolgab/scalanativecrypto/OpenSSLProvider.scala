@@ -83,15 +83,9 @@ class OpenSSLProvider(
       // Load legacy provider to support old algorithms, e.g. DES, RC2, etc.
       // Required by legacy PKCS#12 files, more specifically, thoses tests with
       // BadSSL's certs in our own tests and upstream scala-requests' tests.
-      val osslLibCtx = OSSL_LIB_CTX_get0_global_default()
-      if (OSSL_PROVIDER_available(osslLibCtx, c"legacy") == 1)
-        OSSL_PROVIDER_load(osslLibCtx, c"legacy")
-      else
-        System.err.println(
-          "[java.security.Provider] OpenSSL legacy provider is not available, Some algorithms may not work"
-        )
+      AppLibCtx.loadLegacyProvider()
       // load the default provider explicitly
-      OSSL_PROVIDER_load(osslLibCtx, c"default")
+      AppLibCtx.loadDefaultProvider()
 
       for (
         (len, aliases) <- Seq(
