@@ -21,8 +21,6 @@ jobs:
           - "17"
           - "21"
           - "25"
-    env:
-      JVM_VERSION: ${{ matrix.java }}
     name: "Build and Test with Java ${{ matrix.java }}"
     steps:
       - uses: actions/checkout@v5
