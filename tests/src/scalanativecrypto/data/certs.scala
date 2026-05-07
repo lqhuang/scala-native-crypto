@@ -51,7 +51,10 @@ object CertExample0 {
     -----END PUBLIC KEY-----
     """
 
-  val publicKey = nonStripIndentPubKey.stripIndent()
+  // `String.stripIndent()` were added since JDK 15, but we've JDK 11 in CI now
+  // Switch to `stripIndent()` when we depcreate Java 11 in the future
+  val publicKey =
+    nonStripIndentPubKey.strip().split("\n").map(_.strip()).mkString("\n")
 
   val nonStripIndentCert =
     """
@@ -68,5 +71,9 @@ object CertExample0 {
     -----END CERTIFICATE-----
     """
 
-  val cert = nonStripIndentCert.stripIndent()
+  // `String.stripIndent()` were added since JDK 15, but we've JDK 11 in CI now
+  // Switch to `stripIndent()` when we depcreate Java 11 in the future
+  val cert =
+    nonStripIndentCert.strip().split("\n").map(_.strip()).mkString("\n")
+
 }

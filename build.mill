@@ -27,8 +27,6 @@ trait Shared
   def organization = "com.github.lolgab"
   def scalaNativeVersion = "0.5.11"
 
-  // override def jvmVersion = Task { Task.env.getOrElse("JVM_VERSION", super.jvmVersion()) }
-
   def scalacOptions =
     super.scalacOptions() ++ (if (isScala3(crossScalaVersion)) Seq()
                               else Seq("-Ywarn-unused"))
