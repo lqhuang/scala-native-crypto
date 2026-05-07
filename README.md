@@ -119,7 +119,7 @@ According [JDK Security Algorithm Implementation Requirements](https://docs.orac
   - [ ] RSASSA-PSS (2048, 3072, 4096)
   - [ ] X25519
 - `java.security.KeyStore`
-  - [ ] PKCS12
+  - [x] PKCS12
     - Partially implemented, only supports loading and reading, but not writing for now.
 - `javax.crypto.Mac`
   - [x] HmacSHA1
