@@ -144,7 +144,7 @@ According [JDK Security Algorithm Implementation Requirements](https://docs.orac
 - `javax.crypto.SecretKeyFactory`
   - [ ] DESede
 - [x] `java.security.SecureRandom`
-- `java.security.Signature`
+- [ ] `java.security.Signature`
 - `javax.net.ssl.SSLContext`: See downstream project [lqhuang/scala-native-http](https://github.com/lqhuang/scala-native-http)
   - [ ] TLSv1.2
   - [ ] TLSv1.3
