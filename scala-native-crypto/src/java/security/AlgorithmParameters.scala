@@ -6,7 +6,7 @@ import java.util.Objects.requireNonNull
 abstract class AlgorithmParametersSpi {}
 
 // Refs:
-// - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/AlgorithmParameters
+// - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/AlgorithmParameters.html
 abstract class AlgorithmParameters protected (
     spi: AlgorithmParametersSpi,
     provider: Provider,

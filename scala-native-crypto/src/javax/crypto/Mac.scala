@@ -7,6 +7,8 @@ import java.security.Provider
 import java.security.spec.AlgorithmParameterSpec
 import java.util.Objects.requireNonNull
 
+// Refs:
+// - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/javax/crypto/MacSpi.html
 abstract class MacSpi {
   def engineGetMacLength(): Int
 

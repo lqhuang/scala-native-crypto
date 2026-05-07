@@ -4,6 +4,8 @@ import java.nio.ByteBuffer
 import java.security.Provider
 import java.util.Objects.requireNonNull
 
+// Refs:
+// - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/MessageDigestSpi.html
 abstract class MessageDigestSpi {
   def engineGetDigestLength(): Int
 

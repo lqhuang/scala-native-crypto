@@ -7,7 +7,7 @@ import java.util.Objects.requireNonNull
 import java.security.NoSuchAlgorithmException
 
 // Refs:
-// - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/cert/CertificateFactorySpi
+// - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/cert/CertificateFactorySpi.html
 abstract class CertificateFactorySpi {
 
   def engineGenerateCertificate(is: InputStream): Certificate
@@ -29,7 +29,7 @@ abstract class CertificateFactorySpi {
 }
 
 // Refs:
-// - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/cert/CertificateFactory
+// - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/cert/CertificateFactory.html
 abstract class CertificateFactory protected (
     spi: CertificateFactorySpi,
     provider: Provider,

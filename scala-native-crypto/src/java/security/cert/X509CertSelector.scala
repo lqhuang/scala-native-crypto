@@ -1,13 +1,13 @@
 package java.security.cert
 
-import java.io.IOException
 import java.math.BigInteger
 import java.security.PublicKey
-import java.util.{Collection, Date, List => JList, Set => JSet}
+import java.util.{Collection, Date}
+import java.util.{List => JList, Set => JSet}
 import javax.security.auth.x500.X500Principal
 
 // Refs:
-// - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/cert/X509CertSelector
+// - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/cert/X509CertSelector.html
 class X509CertSelector() extends CertSelector() {
 
   def setCertificate(cert: X509Certificate): Unit = ???
