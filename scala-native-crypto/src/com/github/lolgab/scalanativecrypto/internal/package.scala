@@ -8,6 +8,7 @@ import scala.scalanative.unsigned.UnsignedRichInt
 @link("crypto")
 @extern
 object crypto {
+  // scalafmt: { maxColumn = 150 }
 
   /*
    * Global
@@ -15,7 +16,6 @@ object crypto {
   type OSSL_LIB_CTX_* = CVoidPtr
   type OSSL_PROVIDER_* = CVoidPtr
 
-  // scalafmt: { maxColumn = 120 }
   def OSSL_LIB_CTX_new(): OSSL_LIB_CTX_* = extern
   def OSSL_LIB_CTX_free(ctx: OSSL_LIB_CTX_*): Unit = extern
   def OSSL_LIB_CTX_get0_global_default(): OSSL_LIB_CTX_* = extern
@@ -23,7 +23,6 @@ object crypto {
 
   def OSSL_PROVIDER_available(ctx: OSSL_LIB_CTX_*, name: CString): CInt = extern
   def OSSL_PROVIDER_load(ctx: OSSL_LIB_CTX_*, name: CString): OSSL_PROVIDER_* = extern
-  // scalafmt: { maxColumn = 80 }
 
   /*
    * BIO operations
@@ -38,7 +37,6 @@ object crypto {
   def BIO_new_mem_buf(buf: Ptr[Byte], len: CInt): BIO_* = extern
   def BIO_free(a: BIO_METHOD_*): CInt = extern
   def BIO_gets(b: BIO_*, buf: Ptr[CChar], size: CInt): CInt = extern
-
   // def BIO_get_mem_data(b: BIO_*, pp: Ptr[CString]): CLong = extern
 
   /*
@@ -48,7 +46,6 @@ object crypto {
   type EVP_MD_CTX_* = CVoidPtr
   type EVP_PKEY_* = CVoidPtr
 
-  // scalafmt: { maxColumn = 120 }
   def RAND_bytes(buf: Ptr[Byte], num: CInt): CInt = extern
 
   def EVP_PKEY_free(pkey: EVP_PKEY_*): Unit = extern
@@ -63,21 +60,18 @@ object crypto {
 
   def EVP_get_digestbyname(name: CString): EVP_MD_* = extern
   def EVP_sha256(): EVP_MD_* = extern // Function to get the SHA-256 algorithm
-  // scalafmt: { maxColumn = 80 }
 
   /*
    * HMAC related types and functions
    */
   type HMAC_CTX_* = CVoidPtr
 
-  // scalafmt: { maxColumn = 120 }
   def HMAC_CTX_new(): HMAC_CTX_* = extern
   def HMAC_CTX_reset(ctx: HMAC_CTX_*): Unit = extern
   def HMAC_CTX_free(ctx: HMAC_CTX_*): Unit = extern
   def HMAC_Init_ex(ctx: HMAC_CTX_*, key: CVoidPtr, key_len: CInt, md: EVP_MD_*, impl: CVoidPtr): CInt = extern
   def HMAC_Update(ctx: HMAC_CTX_*, data: Ptr[Byte], len: Int): CInt = extern
   def HMAC_Final(ctx: HMAC_CTX_*, md: Ptr[Byte], len: Ptr[Int]): CInt = extern
-  // scalafmt: { maxColumn = 80 }
 
   /*
    * X509 related types and functions
@@ -90,7 +84,6 @@ object crypto {
   type ASN1_INTEGER_* = CVoidPtr
   type ASN1_TIME_* = CVoidPtr
 
-  // scalafmt: { maxColumn = 120 }
   def X509_new(): X509_* = extern
   def X509_free(x: X509_*): Unit = extern
   def X509_dup(x: X509_*): X509_* = extern
@@ -106,63 +99,30 @@ object crypto {
   def X509_alias_get0(x: X509_*, len: Ptr[CInt]): Ptr[CUnsignedChar] = extern
   def X509_keyid_get0(x: X509_*, len: Ptr[CInt]): Ptr[CUnsignedChar] = extern
 
+  def X509_NAME_print_ex(out: BIO_*, nm: X509_NAME_*, indent: CInt, flags: CUnsignedLong): CInt = extern
+
   def sncrypto_ossl_sk_X509_num(stack: Ptr[stack_st_X509]): CInt = extern
   def sncrypto_ossl_sk_X509_value(stack: Ptr[stack_st_X509], i: Int): X509_* = extern
   def sncrypto_ossl_sk_X509_free(stack: Ptr[stack_st_X509]): Unit = extern
-  // scalafmt: { maxColumn = 80 }
 
-  def PEM_read_bio_X509(
-      bp: BIO_*,
-      x: Ptr[X509_*],
-      cb: Ptr[pem_password_cb],
-      u: CVoidPtr
-  ): X509_* =
-    extern
-
-  def X509_NAME_print_ex(
-      out: BIO_*,
-      nm: X509_NAME_*,
-      indent: CInt,
-      flags: CUnsignedLong
-  ): CInt =
-    extern
+  def PEM_read_bio_X509(bp: BIO_*, x: Ptr[X509_*], cb: Ptr[pem_password_cb], u: CVoidPtr): X509_* = extern
 
   /*
    * PKCS7 related types and functions
    */
   type PKCS7_* = CVoidPtr
 
-  def PEM_read_bio_PKCS7(
-      bp: BIO_*,
-      x: Ptr[PKCS7_*],
-      cb: Ptr[pem_password_cb],
-      u: CVoidPtr
-  ): PKCS7_* =
-    extern
+  def PEM_read_bio_PKCS7(bp: BIO_*, x: Ptr[PKCS7_*], cb: Ptr[pem_password_cb], u: CVoidPtr): PKCS7_* = extern
 
   /*
    * PKCS12 related types and functions
    */
   type PKCS12_* = CVoidPtr
 
-  def PKCS12_init_ex(
-      mode: CInt,
-      ctx: OSSL_LIB_CTX_*,
-      propq: CString
-  ): PKCS12_* = extern
+  def PKCS12_init_ex(mode: CInt, ctx: OSSL_LIB_CTX_*, propq: CString): PKCS12_* = extern
   def PKCS12_free(p12: PKCS12_*): Unit = extern
-  def PKCS12_verify_mac(
-      p12: PKCS12_*,
-      pass: CString,
-      passlen: CInt
-  ): CInt = extern
-  def PKCS12_parse(
-      p12: PKCS12_*,
-      pass: CString,
-      pkey: Ptr[EVP_PKEY_*],
-      cert: Ptr[X509_*],
-      ca: Ptr[Ptr[stack_st_X509]]
-  ): CInt = extern
+  def PKCS12_verify_mac(p12: PKCS12_*, pass: CString, passlen: CInt): CInt = extern
+  def PKCS12_parse(p12: PKCS12_*, pass: CString, pkey: Ptr[EVP_PKEY_*], cert: Ptr[X509_*], ca: Ptr[Ptr[stack_st_X509]]): CInt = extern
 
   def d2i_PKCS12_bio(bp: BIO_*, p12: Ptr[PKCS12_*]): PKCS12_* = extern
 
@@ -174,6 +134,7 @@ object crypto {
   def ERR_get_error(): CUnsignedLong = extern
   def ERR_error_string(err: CUnsignedLong, buf: CString): CString = extern
 
+  // scalafmt: { maxColumn = 80 }
 }
 
 object Constants {

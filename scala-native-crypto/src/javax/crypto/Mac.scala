@@ -36,9 +36,9 @@ abstract class MacSpi {
 // Refs:
 // - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/javax/crypto/Mac.html
 abstract class Mac protected (
-    spi: MacSpi,
-    provider: Provider,
-    algorithm: String
+    protected val spi: MacSpi,
+    protected val provider: Provider,
+    protected val algorithm: String
 ) extends Cloneable {
 
   final def getAlgorithm(): String =

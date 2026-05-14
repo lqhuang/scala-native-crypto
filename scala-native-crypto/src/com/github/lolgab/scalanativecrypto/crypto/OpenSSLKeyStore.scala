@@ -38,10 +38,12 @@ import com.github.lolgab.scalanativecrypto.internal.crypto.{
 }
 import com.github.lolgab.scalanativecrypto.internal.Constants.NID_pkcs7_data
 
-final class OpenSSLKeyStore(provider: Provider, ksType: String)
-    extends KeyStore(new OpenSSLKeyStoreSpi(), provider, ksType)
+final class OpenSSLKeyStore protected[scalanativecrypto] (
+    provider: Provider,
+    ksType: String
+) extends KeyStore(new OpenSSLKeyStoreSpi(), provider, ksType)
 
-final class OpenSSLKeyStoreSpi protected[scalanativecrypto]
+private[scalanativecrypto] final class OpenSSLKeyStoreSpi protected[scalanativecrypto]
     extends KeyStoreSpi {
 
   @volatile

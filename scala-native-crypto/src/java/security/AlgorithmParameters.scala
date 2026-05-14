@@ -8,9 +8,9 @@ abstract class AlgorithmParametersSpi {}
 // Refs:
 // - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/AlgorithmParameters.html
 abstract class AlgorithmParameters protected (
-    spi: AlgorithmParametersSpi,
-    provider: Provider,
-    algorithm: String
+    protected val spi: AlgorithmParametersSpi,
+    protected val provider: Provider,
+    protected val algorithm: String
 ) {
 
   final def getAlgorithm(): String = algorithm

@@ -7,9 +7,9 @@ abstract class KeyPairGeneratorSpi {}
 // Refs:
 // - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/KeyPairGenerator.html
 abstract class KeyPairGenerator(
-    spi: KeyPairGeneratorSpi,
-    provider: Provider,
-    algorithm: String
+    protected val spi: KeyPairGeneratorSpi,
+    protected val provider: Provider,
+    protected val algorithm: String
 ) {
 
   final def getAlgorithm(): String = algorithm

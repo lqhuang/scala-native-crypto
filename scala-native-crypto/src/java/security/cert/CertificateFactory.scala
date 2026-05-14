@@ -31,9 +31,9 @@ abstract class CertificateFactorySpi {
 // Refs:
 // - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/cert/CertificateFactory.html
 abstract class CertificateFactory protected (
-    spi: CertificateFactorySpi,
-    provider: Provider,
-    certType: String
+    protected val spi: CertificateFactorySpi,
+    protected val provider: Provider,
+    protected val certType: String
 ) {
 
   final def getProvider(): Provider =

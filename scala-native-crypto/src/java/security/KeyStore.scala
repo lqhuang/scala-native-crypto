@@ -89,14 +89,16 @@ abstract class KeyStoreSpi {
 // Refs:
 // - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/KeyStore.html
 abstract class KeyStore(
-    spi: KeyStoreSpi,
-    provider: Provider,
-    ksType: String
+    protected val spi: KeyStoreSpi,
+    protected val provider: Provider,
+    protected val ksType: String
 ) {
 
-  final def getProvider(): Provider = provider
+  final def getProvider(): Provider =
+    provider
 
-  final def getType(): String = ksType
+  final def getType(): String =
+    ksType
 
   // @since JDK 18
   final def getAttributes(alias: String): JSet[KeyStore.Entry.Attribute] =

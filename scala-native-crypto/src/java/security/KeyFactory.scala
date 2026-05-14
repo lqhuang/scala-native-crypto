@@ -8,9 +8,9 @@ abstract class KeyFactorySpi {}
 // Refs:
 // - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/KeyFactory.html
 abstract class KeyFactory protected (
-    spi: KeyFactorySpi,
-    provider: Provider,
-    algorithm: String
+    protected val spi: KeyFactorySpi,
+    protected val provider: Provider,
+    protected val algorithm: String
 ) {
   requireNonNull(provider)
   requireNonNull(algorithm)

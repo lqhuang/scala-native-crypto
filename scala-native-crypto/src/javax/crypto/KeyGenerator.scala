@@ -9,14 +9,14 @@ abstract class KeyGeneratorSpi {}
 // Refs:
 // - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/javax/crypto/KeyGenerator.html
 class KeyGenerator protected (
-    spi: KeyGeneratorSpi,
-    provider: Provider,
-    algorithm: String
+    protected val spi: KeyGeneratorSpi,
+    protected val provider: Provider,
+    protected val algorithm: String
 ) {
 
-  def getAlgorithm(): String = ???
+  def getAlgorithm(): String = algorithm
 
-  def getProvider(): Provider = ???
+  def getProvider(): Provider = provider
 
   def init(random: SecureRandom): Unit = ???
 
@@ -41,8 +41,5 @@ object KeyGenerator {
   def getInstance(algorithm: String, provider: String): KeyGenerator =
     throw new UnsupportedOperationException()
 
-  def getInstance(
-      algorithm: String,
-      provider: Provider
-  ): KeyGenerator = ???
+  def getInstance(algorithm: String, provider: Provider): KeyGenerator = ???
 }

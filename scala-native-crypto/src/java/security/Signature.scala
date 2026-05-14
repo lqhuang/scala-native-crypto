@@ -12,9 +12,9 @@ abstract class SignatureSpi {}
 // Refs:
 // - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/Signature.html
 abstract class Signature(
-    spi: SignatureSpi,
-    provider: Provider,
-    algorithm: String
+    protected val spi: SignatureSpi,
+    protected val provider: Provider,
+    protected val algorithm: String
 ) {
 
   // magic numbers come from

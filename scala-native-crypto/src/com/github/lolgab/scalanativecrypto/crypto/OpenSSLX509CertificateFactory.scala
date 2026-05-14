@@ -19,7 +19,17 @@ import scala.scalanative.unsafe.{Zone, Ptr, alloc}
 import _root_.com.github.lolgab.scalanativecrypto.internal.crypto
 import _root_.com.github.lolgab.scalanativecrypto.crypto.cert.OpenSSLX509Certificate
 
-class OpenSSLX509CertificateFactorySpi extends CertificateFactorySpi {
+final class OpenSSLX509CertificateFactory protected[scalanativecrypto] (
+    provider: Provider,
+    algorithm: String
+) extends CertificateFactory(
+      new OpenSSLX509CertificateFactorySpi(),
+      provider,
+      algorithm
+    )
+
+private[scalanativecrypto] class OpenSSLX509CertificateFactorySpi
+    extends CertificateFactorySpi {
 
   def engineGenerateCertificate(is: InputStream): Certificate = {
     requireNonNull(is, "input stream must not be null")
@@ -99,12 +109,3 @@ class OpenSSLX509CertificateFactorySpi extends CertificateFactorySpi {
   def engineGenerateCRLs(is: InputStream): Collection[? <: CRL] =
     ???
 }
-
-final class OpenSSLX509CertificateFactory protected[scalanativecrypto] (
-    provider: Provider,
-    algorithm: String
-) extends CertificateFactory(
-      new OpenSSLX509CertificateFactorySpi(),
-      provider,
-      algorithm
-    )

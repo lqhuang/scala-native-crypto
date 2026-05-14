@@ -23,7 +23,7 @@ final class OpenSSLMac protected[scalanativecrypto] (
     length: Int
 ) extends Mac(new OpenSSLMacSpi(algorithm, name, length), provider, algorithm)
 
-private final class OpenSSLMacSpi(
+private[scalanativecrypto] final class OpenSSLMacSpi(
     algorithm: String,
     name: CString,
     length: Int
