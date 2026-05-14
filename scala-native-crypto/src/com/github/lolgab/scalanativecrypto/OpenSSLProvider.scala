@@ -151,6 +151,8 @@ object OpenSSLProvider {
 
   val defaultInstance = new OpenSSLProvider()
 
+  val defaultLibCTX = AppLibCtx.osslLibCtx
+
   def apply(): OpenSSLProvider = new OpenSSLProvider()
 
   private case class ServiceKey(
