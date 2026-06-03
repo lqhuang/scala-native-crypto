@@ -4,7 +4,10 @@ import java.security.Provider
 import java.util.{List => JList, Map => JMap}
 
 import _root_.com.github.lolgab.scalanativecrypto.JcaService
-import _root_.com.github.lolgab.scalanativecrypto.crypto.OpenSSLKeyStore
+import _root_.com.github.lolgab.scalanativecrypto.crypto.{
+  OpenSSLKeyStore,
+  OpenSSLKeyStoreSpi
+}
 
 class OpenSSLKeyStoreService protected[scalanativecrypto] (
     private val provider: Provider,
@@ -24,7 +27,7 @@ class OpenSSLKeyStoreService protected[scalanativecrypto] (
     if (parameter == null) true else false
 
   override def newInstance(constructorParameter: Object): OpenSSLKeyStore = {
-    new OpenSSLKeyStore(provider, algorithm)
+    new OpenSSLKeyStore(new OpenSSLKeyStoreSpi(), provider, algorithm)
   }
 
 }

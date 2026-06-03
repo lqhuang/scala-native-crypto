@@ -39,21 +39,27 @@ import com.github.lolgab.scalanativecrypto.internal.crypto.{
 import com.github.lolgab.scalanativecrypto.internal.Constants.NID_pkcs7_data
 
 final class OpenSSLKeyStore protected[scalanativecrypto] (
+    _spi: OpenSSLKeyStoreSpi,
     provider: Provider,
     ksType: String
-) extends KeyStore(new OpenSSLKeyStoreSpi(), provider, ksType)
+) extends KeyStore(_spi, provider, ksType) {
+  def pkey: EVP_PKEY_* = _spi.pkey
+  def pkcs: PKCS12_* = _spi.pkcs
+  def cert: X509_* = _spi.cert
+  def stackOfCA: Ptr[stack_st_X509] = _spi.stackOfCA
+}
 
 private[scalanativecrypto] final class OpenSSLKeyStoreSpi protected[scalanativecrypto]
     extends KeyStoreSpi {
 
   @volatile
-  private var pkey: EVP_PKEY_* = null
+  private[scalanativecrypto] var pkey: EVP_PKEY_* = null
   @volatile
-  private var pkcs: PKCS12_* = null
+  private[scalanativecrypto] var pkcs: PKCS12_* = null
   @volatile
-  private var cert: X509_* = null
+  private[scalanativecrypto] var cert: X509_* = null
   @volatile
-  private var stackOfCA: Ptr[stack_st_X509] = null
+  private[scalanativecrypto] var stackOfCA: Ptr[stack_st_X509] = null
 
   private val isLoaded = new AtomicBoolean(false)
   private val ptrLock = new ReentrantLock()
