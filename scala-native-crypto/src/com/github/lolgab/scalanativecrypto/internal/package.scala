@@ -1,8 +1,9 @@
 package com.github.lolgab.scalanativecrypto.internal
 
 import java.security.NoSuchAlgorithmException
-import scala.scalanative.unsafe._
 
+import scala.scalanative.posix.stdio.FILE
+import scala.scalanative.unsafe._
 import scala.scalanative.unsigned.UnsignedRichInt
 
 @link("crypto")
@@ -21,8 +22,15 @@ object crypto {
   def OSSL_LIB_CTX_get0_global_default(): OSSL_LIB_CTX_* = extern
   def OSSL_LIB_CTX_set0_default(ctx: OSSL_LIB_CTX_*): OSSL_LIB_CTX_* = extern
 
+  def OSSL_PROVIDER_get0_default_search_path(ctx: OSSL_LIB_CTX_*): CString = extern
+  def OSSL_PROVIDER_add_builtin(ctx: OSSL_LIB_CTX_*, name: CString, init: CFuncPtr1[OSSL_LIB_CTX_*, CInt]): CInt = extern
   def OSSL_PROVIDER_available(ctx: OSSL_LIB_CTX_*, name: CString): CInt = extern
   def OSSL_PROVIDER_load(ctx: OSSL_LIB_CTX_*, name: CString): OSSL_PROVIDER_* = extern
+  def OSSL_PROVIDER_unload(prov: OSSL_PROVIDER_*): CInt = extern
+
+  def CONF_get1_default_config_file(): CString = extern
+  def CONF_modules_load_file_ex(ctx: OSSL_LIB_CTX_*, filename: CString, appname: CString, flags: CUnsignedLong): CInt = extern
+  def CONF_modules_load_file(filename: CString, appname: CString, flags: CUnsignedLong): CInt = extern
 
   /*
    * BIO operations

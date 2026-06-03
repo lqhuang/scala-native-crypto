@@ -73,12 +73,8 @@ class OpenSSLProvider(
 
   private def setup(): Unit = {
     if (initialized.compareAndSet(false, true)) {
-      // Load legacy provider to support old algorithms, e.g. DES, RC2, etc.
-      // Required by legacy PKCS#12 files, more specifically, thoses tests with
-      // BadSSL's certs in our own tests and upstream scala-requests' tests.
-      AppLibCtx.loadLegacyProvider()
-      // load the default provider explicitly
-      AppLibCtx.loadDefaultProvider()
+      AppLibCtx.loadDefaultConfig()
+      AppLibCtx.loadLegacyAndDefaultProvider()
 
       for (
         (len, aliases) <- Seq(
