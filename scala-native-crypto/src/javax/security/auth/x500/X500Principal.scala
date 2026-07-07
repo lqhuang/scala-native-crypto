@@ -21,9 +21,7 @@ final class X500Principal(name: String, keywordMap: JMap[String, String])
   def this(is: InputStream) = this(
     {
       requireNonNull(is, "input stream must not be null")
-      val data = new Array[Byte](is.available())
-      is.read(data)
-      throw new UnsupportedOperationException(
+      throw new NotImplementedError(
         "Constructor(InputStream) is not supported yet"
       )
     },

@@ -224,12 +224,7 @@ private[scalanativecrypto] final class OpenSSLKeyStoreSpi protected[scalanativec
       param,
       "the param (KeyStore.LoadStoreParameter) must be non-null"
     )
-
-    if (!isLoaded.compareAndExchange(false, true))
-      throw new IOException("the KeyStore has already been loaded")
-    else {
-      ???
-    }
+    ???
   }
 
   // @since JDK 18
@@ -333,7 +328,7 @@ private[scalanativecrypto] final class OpenSSLKeyStoreSpi protected[scalanativec
       // As OpenSSL Docs:
       // > The parameter pass is interpreted as a string in the UTF-8 encoding.
       // > If it is not valid UTF-8, then it is assumed to be ISO8859-1 instead.
-      val passwdUTF8 = new String(password.mkString.getBytes(), UTF_8)
+      val passwdUTF8 = new String(password)
       val passwdLength = passwdUTF8.getBytes(UTF_8).length
       val passwdBuf = toCString(passwdUTF8)
 
@@ -379,6 +374,31 @@ private[scalanativecrypto] final class OpenSSLKeyStoreSpi protected[scalanativec
 
         ptrLock.lock()
         try {
+          // Clean up previous state when re-loading a KeyStore instance
+          if (stackOfCA != null) {
+            val n = crypto.sncrypto_ossl_sk_X509_num(stackOfCA)
+            if (n > 0) {
+              0 until n foreach { i =>
+                val x = crypto.sncrypto_ossl_sk_X509_value(stackOfCA, i)
+                if (x != null) crypto.X509_free(x)
+              }
+            }
+            crypto.sncrypto_ossl_sk_X509_free(stackOfCA)
+            stackOfCA = null
+          }
+          if (cert != null) {
+            crypto.X509_free(cert)
+            cert = null
+          }
+          if (pkey != null) {
+            crypto.EVP_PKEY_free(pkey)
+            pkey = null
+          }
+          if (pkcs != null) {
+            crypto.PKCS12_free(pkcs)
+            pkcs = null
+          }
+
           pkcs = p12Handle
           pkey = !_pkey
           cert = !_x509
@@ -396,10 +416,13 @@ private[scalanativecrypto] final class OpenSSLKeyStoreSpi protected[scalanativec
       ptr: X509_*,
       ptrStackCA: Ptr[stack_st_X509]
   ): Array[OpenSSLX509Certificate] = {
-    val numCA = {
-      val n = crypto.sncrypto_ossl_sk_X509_num(ptrStackCA)
-      if (n < 0) 0 else n
-    }
+    val numCA =
+      if (ptrStackCA == null) //
+        0
+      else {
+        val n = crypto.sncrypto_ossl_sk_X509_num(ptrStackCA)
+        if (n < 0) 0 else n
+      }
     val numCert = if (ptr != null) 1 else 0
     val total = numCert + numCA
     val chain = new Array[OpenSSLX509Certificate](total)

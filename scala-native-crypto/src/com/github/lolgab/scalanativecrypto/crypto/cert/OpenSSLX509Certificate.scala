@@ -3,10 +3,11 @@ package com.github.lolgab.scalanativecrypto.crypto.cert
 import java.math.BigInteger
 import java.security.cert.X509Certificate
 import java.security.{PublicKey, Provider, Principal}
-import java.lang.ref.Cleaner
 import java.util.{Date, Collection}
 import java.util.{Set => JSet, List => JList}
 import javax.security.auth.x500.X500Principal
+
+import java.com.github.lolgab.scalanativecrypto.internal.CtxFinalizer
 
 import scala.scalanative.unsafe.{fromCString, stackalloc}
 import scala.scalanative.unsafe.CChar
@@ -18,12 +19,7 @@ import _root_.com.github.lolgab.scalanativecrypto.internal.Constants.XN_FLAG_RFC
 class OpenSSLX509Certificate protected[scalanativecrypto] (val ptr: X509_*)
     extends X509Certificate() {
 
-  Cleaner
-    .create()
-    .register(
-      this,
-      new Runnable { override def run(): Unit = crypto.X509_free(ptr) }
-    )
+  CtxFinalizer.register_X509(this, ptr)
 
   def getIssuerDN(): Principal = throw new UnsupportedOperationException(
     "getIssuerDN is deprecated since Java 16, use getIssuerX500Principal() instead"

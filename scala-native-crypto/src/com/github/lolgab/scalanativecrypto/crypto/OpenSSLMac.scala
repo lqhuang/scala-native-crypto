@@ -92,6 +92,11 @@ private[scalanativecrypto] final class OpenSSLMacSpi(
   final def engineUpdate(data: Array[Byte], offset: Int, len: Int): Unit = {
     throwIfNotInitialized()
 
+    if (len == 0) return
+
+    if (offset < 0 || len < 0 || len > data.length - offset)
+      throw new ArrayIndexOutOfBoundsException()
+
     val dataPtr = data.at(offset)
     if (crypto.HMAC_Update(ctx, dataPtr, len) != 1)
       throw new RuntimeException("Failed to update HMAC with data")

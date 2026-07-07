@@ -22,9 +22,9 @@ This directory contains a PEM-encoded X.509 certificate and its private key with
 
 This directory contains a PEM-encoded X.509 certificate and its private key with password-based encryption.
 
-## x509-cert-pem-passwd
+## pkcs12-pbe-pbkdf2
 
-This directory contains a PEM-encoded X.509 certificate and its private key without encryption. And one more
+This directory contains PKCS#12 files generated with PBKDF2 and different MAC/PBE algorithm combinations.
 
 ## pkcs12-cert-emptypasswd
 

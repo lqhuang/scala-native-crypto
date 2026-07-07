@@ -50,14 +50,19 @@ private[scalanativecrypto] class OpenSSLX509CertificateFactorySpi
         }
         val bp = crypto.BIO_new_mem_buf(buf, bytes.length)
 
-        val ptr = crypto.PEM_read_bio_X509(bp, null, null, null)
-        if (ptr == null) {
-          throw new CertificateException(
-            "Failed to parse input certificate"
-          )
-        }
+        try {
+          val ptr = crypto.PEM_read_bio_X509(bp, null, null, null)
+          if (ptr == null) {
+            throw new CertificateException(
+              "Failed to parse input certificate"
+            )
+          }
 
-        new OpenSSLX509Certificate(ptr)
+          new OpenSSLX509Certificate(ptr)
+        } finally {
+          if (bp != null)
+            crypto.BIO_free(bp)
+        }
       }
 
       x509

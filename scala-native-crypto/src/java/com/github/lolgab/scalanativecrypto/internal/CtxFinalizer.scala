@@ -53,8 +53,16 @@ object CtxFinalizer {
   private final class StackOfX509_State(ptr: Ptr[crypto.stack_st_X509])
       extends Runnable {
     override def run(): Unit =
-      if (ptr != null)
+      if (ptr != null) {
+        val n = crypto.sncrypto_ossl_sk_X509_num(ptr)
+        if (n > 0) {
+          0 until n foreach { i =>
+            val x = crypto.sncrypto_ossl_sk_X509_value(ptr, i)
+            if (x != null) crypto.X509_free(x)
+          }
+        }
         crypto.sncrypto_ossl_sk_X509_free(ptr)
+      }
   }
   def register_StackOfX509(
       owner: AnyRef,
