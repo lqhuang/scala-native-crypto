@@ -77,7 +77,7 @@ abstract class Mac protected (
         "Output buffer too small to hold the result"
       )
     update(data, outOffset, data.length - outOffset)
-    doFinal()
+    spi.engineDoFinal()
   }
 
   final def doFinal(data: Array[Byte]): Array[Byte] = {
