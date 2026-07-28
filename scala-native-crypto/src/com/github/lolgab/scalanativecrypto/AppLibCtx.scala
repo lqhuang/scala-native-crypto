@@ -1,6 +1,7 @@
 package com.github.lolgab.scalanativecrypto
 
 import java.util.concurrent.atomic.AtomicBoolean
+import java.nio.file.{Files, Path}
 
 import java.com.github.lolgab.scalanativecrypto.internal.CtxFinalizer
 
@@ -40,23 +41,27 @@ private[scalanativecrypto] object AppLibCtx {
   private final val confLoaded: AtomicBoolean = new AtomicBoolean(false)
   private final val provLoaded: AtomicBoolean = new AtomicBoolean(false)
 
-  def loadDefaultConfig(): Unit =
-    if (!confLoaded.compareAndExchange(false, true)) {
-      val defaultConfigFile = CONF_get1_default_config_file()
-      val ret =
-        CONF_modules_load_file_ex(
-          osslLibCtx,
-          defaultConfigFile,
-          null,
-          0.toUByte
-        )
-      if (ret <= 0) {
-        val msg = fromCString(ERR_error_string(ERR_get_error(), null))
-        throw new RuntimeException(
-          s"Failed to load OpenSSL configuration: ${msg}"
-        )
+  def loadDefaultConfig(): Unit = {
+    val defaultConfigFile = CONF_get1_default_config_file()
+
+    if (Files.isReadable(Path.of(fromCString(defaultConfigFile)))) {
+      if (!confLoaded.compareAndExchange(false, true)) {
+        val ret =
+          CONF_modules_load_file_ex(
+            osslLibCtx,
+            defaultConfigFile,
+            null,
+            0.toUByte
+          )
+        if (ret <= 0) {
+          val msg = fromCString(ERR_error_string(ERR_get_error(), null))
+          throw new RuntimeException(
+            s"Failed to load OpenSSL configuration: ${msg}"
+          )
+        }
       }
     }
+  }
 
   def loadLegacyAndDefaultProvider(): Unit =
     if (!provLoaded.compareAndExchange(false, true)) {
